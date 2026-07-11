@@ -4,6 +4,9 @@ Projeto desenvolvido para a disciplina de Projetos Web da Uniftec. Período leti
 ## Objetivo
 Desenvolver uma API para a consulta de pedidos, implementando as definições REST, permitindo ser integrada com outras aplicações
 
+## URL da API de Pedidos
+https://github.com/DiogoTissian/ftec.projetoweb.TrabalhoPedidos
+
 ## Desenvolvimento
 API construída em C# com o framework .NET Core
 
