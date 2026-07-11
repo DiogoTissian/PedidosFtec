@@ -1,0 +1,250 @@
+﻿@model EstatisticaModel
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-container">
+    <div class="content-card">
+
+        <h1>Estatísticas</h1>
+
+        @if (Model == null){
+            <div class="empty-message">
+                Erro ao consultar as estatísticas.
+            </div>
+        }
+        else
+        {
+            <h2>Painel Diário</h2>
+            @if (Model != null && Model.EstatisticaResumo.Count > 0)
+            {
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Título</th>
+                            <th>Valor</th>
+                            <th>Detalhe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (EstatisticaResumoModel dado in Model.EstatisticaResumo)
+                        {
+                            <tr>
+                                <td>@dado.Titulo</td>
+                                <td>@dado.Valor</td>
+                                <td>@dado.Detalhe</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-message">
+                    Painel Diário: Sem informações
+                </div>
+            }
+
+            <h2>Médias</h2>
+
+            <h3>Avaliações</h3>
+            @if (Model != null && Model.MediaAvaliacaoProduto.Count > 0)
+            {
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Qtd. Avaliações</th>
+                            <th>Média Avaliações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (MediaAvaliacaoProdutoModel dado in Model.MediaAvaliacaoProduto)
+                        {
+                            <tr>
+                                <td>@dado.NomeProduto</td>
+                                <td>@dado.QuantidadeAvaliacao</td>
+                                <td>@dado.MediaAvaliacao</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-message">
+                    Avaliações: Sem informações
+                </div>
+            }
+
+            <h3>Vendas por Produto</h3>
+            @if (Model != null && Model.MediaVendaPorProduto.Count > 0)
+            {
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Vendas</th>
+                            <th>Valor Total</th>
+                            <th>Média de Vendas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (MediaVendaPorProdutoModel dado in Model.MediaVendaPorProduto)
+                        {
+                            <tr>
+                                <td>@dado.NomeProduto</td>
+                                <td>@dado.QuantidadeVendida</td>
+                                <td>@dado.ValorTotal</td>
+                                <td>@dado.MediaVenda</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-message">
+                    Vendas por Produto: Sem informações
+                </div>
+            }
+
+            <h3>Vendas por Cliente</h3>
+            @if (Model != null && Model.MediaVendasClientes.Count > 0)
+            {
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Qtd. Pedidos</th>
+                            <th>Total Vendas</th>
+                            <th>Média Vendas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (MediaVendasClientesModel dado in Model.MediaVendasClientes)
+                        {
+                            <tr>
+                                <td>@dado.NomeCliente</td>
+                                <td>@dado.QuantidadePedidos</td>
+                                <td>@dado.TotalVendas</td>
+                                <td>@dado.MediaVendas</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-message">
+                    Vendas por Cliente: Sem informações
+                </div>
+            }
+
+            <h3>Total Vendas</h3>
+            @if (Model != null && Model.TotalVendas != null)
+            {
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Total Pedidos</th>
+                            <th>Total Vendas</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Model.TotalVendas.TotalPedidos</td>
+                            <td>@Model.TotalVendas.TotalVendas</td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="empty-message">
+                    Total Vendas: Sem informações
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f9;
+    }
+
+    .page-container {
+        padding: 30px;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, .15);
+    }
+
+        .content-card h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .content-card h2 {
+            color: #0078d7;
+            border-bottom: 2px solid #0078d7;
+            padding-bottom: 8px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .content-card h3 {
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+    .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 30px;
+    }
+
+        .stats-table thead {
+            background: #0078d7;
+            color: white;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .stats-table tbody tr {
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+            .stats-table tbody tr:nth-child(even) {
+                background: #f8f9fb;
+            }
+
+            .stats-table tbody tr:hover {
+                background: #eef5ff;
+            }
+
+    .empty-message {
+        padding: 15px;
+        margin-bottom: 25px;
+        color: #777;
+        background: #fafafa;
+        border: 1px dashed #ccc;
+        border-radius: 8px;
+    }
+</style>

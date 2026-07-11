@@ -1,0 +1,239 @@
+﻿@model PedidoModel
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-container">
+    <div class="content-card pagamento-card">
+
+        <h2>Finalizar Pagamento</h2>
+
+        <form method="post" asp-controller="Pagamento" asp-action="Pagar">
+
+            <input type="hidden" name="pagamento.PedidoId" id="pedidoId" value="@Model.Id" />
+
+            <div class="form-group">
+                <label>CPF/CNPJ</label>
+                <input type="text" name="pagamento.CpfCliente" value="@DadosTeste.usuarioLogado.documento" />
+            </div>
+
+            <div class="form-group">
+                <label>Valor dos Produtos</label>
+                <input type="text"
+                       disabled
+                       value="@Model.ProdutosModel.FirstOrDefault()?.Preco" />
+                <input type="hidden"
+                       name="pagamento.ValorProdutos"
+                       value="@Model.ProdutosModel.FirstOrDefault()?.Preco" />
+            </div>
+
+            <div class="form-group">
+                <label>Valor Total</label>
+                <input id="ValorTotal"
+                       type="text"
+                       disabled
+                       value="@Model.ValorTotal" />
+                <input type="hidden"
+                       id="ValorTotalModel"
+                       name="pagamento.ValorTotal"
+                       value="@Model.ValorTotal" />
+            </div>
+
+            <div class="form-group">
+                <label>Número de Parcelas</label>
+                <select id="NumeroParcelas"
+                        name="pagamento.NumeroParcelas"
+                        onchange="CalcularParcela()">
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        <option value="@i">@i x</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Valor da Parcela</label>
+                <input id="ValorParcela"
+                       disabled
+                       type="text"
+                       value="@Model.ValorTotal.ToString("F2")" />
+
+                <input id="ValorParcelaModel"
+                       type="hidden"
+                       name="pagamento.ValorParcela"
+                       value="@Model.ValorTotal.ToString("F2")" />
+            </div>
+
+            <div class="form-group">
+                <label>CEP Entrega</label>
+                <input type="text" disabled id="cepEntrega" value="@Model.CEPEnderecoEntrega" />
+            </div>
+
+            <div class="form-group">
+                <label>Transportadora</label>
+                <select id="transportadora" onchange="CalcularFrete()">
+                    <option value="0" selected>Selecione</option>
+                    @foreach (var transportadora in ViewBag.transportadoras)
+                    {
+                        <option value="@transportadora.TransportadoraId">@transportadora.Nome</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Valor Frete</label>
+                <input type="text" id="valorFrete" disabled value="0" />
+                <input type="hidden" id="valorFreteModel" name="pagamento.ValorFrete" value="0" />
+            </div>
+
+            <div class="form-group">
+                <label>Método de Pagamento</label>
+                <select name="pagamento.MetodoPagamento">
+                    <option value="1">Cartão de Crédito</option>
+                    <option value="2">Cartão de Débito</option>
+                    <option value="3">PIX</option>
+                    <option value="4">Boleto</option>
+                </select>
+            </div>
+
+            <button id="btnConfirmar" disabled type="submit" class="btn-pagar">
+                Confirmar Pagamento
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    function CalcularParcela() {
+        let numParc = Number($("#NumeroParcelas").val());
+        let valorTot = Number($("#ValorTotalModel").val());
+
+        let valParc = valorTot / numParc;
+
+        $("#ValorParcela").val(valParc.toFixed(2));
+        $("#ValorParcelaModel").val(valParc.toFixed(2));
+    }
+
+    function CalcularFrete(){
+        $("#valorFrete").val(0);
+        $("#valorFreteModel").val(0);
+
+        let transportadoraId = $("#transportadora").val();
+
+        if (transportadoraId == 0) {
+            $("#btnConfirmar").prop("disabled", true);
+            return;
+        }
+
+        $("#btnConfirmar").prop("disabled", false);
+
+        $.ajax({
+            url: '/Pagamento/CalcularFrete',
+            type: 'POST',
+            data: {
+                "freteCalcularEnvio.PedidoId": $("#pedidoId").val(),
+                "freteCalcularEnvio.CepDestino": $("#cepEntrega").val(),
+                "freteCalcularEnvio.TransportadoraId": $("#transportadora").val()
+            },
+            success: function (response) {
+                $("#valorFrete").val(response.valorFrete);
+                $("#valorFreteModel").val(response.valorFrete);
+            },
+            error: function (xhr) {
+                console.log(xhr.responseText);
+            }
+        });
+    }
+</script>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f9;
+    }
+
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .pagamento-card {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .content-card {
+        background: white;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+        .content-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 18px;
+    }
+
+        .form-group label {
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: .3s;
+        }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                outline: none;
+                border-color: #0078d7;
+                box-shadow: 0 0 5px rgba(0,120,215,0.3);
+            }
+
+            .form-group input:disabled {
+                background: #f8f9fb;
+                color: #333;
+                font-weight: bold;
+            }
+
+    .btn-pagar {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 6px;
+        background: #28a745;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+        .btn-pagar:hover {
+            background: #218838;
+        }
+</style>

@@ -1,0 +1,115 @@
+﻿@model List<PagamentoModel>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-container">
+    <div class="content-card">
+
+        <h2>Histórico de Pagamentos</h2>
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="table-container">
+                <table class="pagamentos-table">
+                    <thead>
+                        <tr>
+                            <th>CPF/CNPJ</th>
+                            <th>Data Pagamento</th>
+                            <th>Valor Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (PagamentoModel pagamento in Model)
+                        {
+                            <tr>
+                                <td>@pagamento.CpfCliente</td>
+                                <td>@pagamento.DataPagamento</td>
+                                <td>R$ @pagamento.ValorTotal</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-message">
+                Sem histórico de pagamentos.
+            </div>
+        }
+
+    </div>
+</div>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f9;
+    }
+
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .content-card {
+        width: 100%;
+        max-width: 1000px;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+        .content-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .pagamentos-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .pagamentos-table thead {
+            background: #0078d7;
+            color: white;
+        }
+
+        .pagamentos-table th,
+        .pagamentos-table td {
+            padding: 14px;
+            text-align: left;
+        }
+
+        .pagamentos-table tbody tr {
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+            .pagamentos-table tbody tr:nth-child(even) {
+                background: #f8f9fb;
+            }
+
+            .pagamentos-table tbody tr:hover {
+                background: #eef5ff;
+            }
+
+    .empty-message {
+        text-align: center;
+        padding: 30px;
+        color: #777;
+        font-size: 18px;
+        font-weight: bold;
+    }
+</style>

@@ -1,0 +1,159 @@
+﻿@model PagamentoModel
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-container">
+    <div class="content-card pagamento-card">
+
+        <h2>Detalhes Pagamento</h2>
+
+        <div class="info-group">
+            <span class="label">CPF/CNPJ</span>
+            <span class="value">@Model.CpfCliente</span>
+        </div>
+
+        <div class="info-group">
+            <span class="label">Valor Total</span>
+            <span class="value">@Model.ValorTotal</span>
+        </div>
+
+        <div class="info-group">
+            <span class="label">Número de Parcelas</span>
+            <span class="value">@Model.NumeroParcelas</span>
+        </div>
+
+        <div class="info-group">
+            <span class="label">Valor da Parcela</span>
+            <span class="value">@Model.ValorParcela</span>
+        </div>
+
+        <div class="info-group">
+            <span class="label">Valor Frete</span>
+            <span class="value">@Model.ValorFrete</span>
+        </div>
+
+        <div class="info-group">
+            <span class="label">Método de Pagamento</span>
+
+            @if (Model.MetodoPagamento == PagamentoModel.MetodoPagamento1.CartaoCredito)
+            {
+                <span class="value">Cartão de Crédito</span>
+            }
+            else if (Model.MetodoPagamento == PagamentoModel.MetodoPagamento1.CartaoDebito)
+            {
+                <span class="value">Cartão de Débito</span>
+            }
+            else if (Model.MetodoPagamento == PagamentoModel.MetodoPagamento1.Pix)
+            {
+                <span class="value">PIX</span>
+            }
+            else if (Model.MetodoPagamento == PagamentoModel.MetodoPagamento1.Boleto)
+            {
+                <span class="value">Boleto</span>
+            }
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    function CalcularParcela() {
+        let numParc = Number($("#NumeroParcelas").val());
+        let valorTot = Number($("#ValorTotalModel").val());
+
+        let valParc = valorTot / numParc;
+
+        $("#ValorParcela").val(valParc.toFixed(2));
+        $("#ValorParcelaModel").val(valParc.toFixed(2));
+    }
+</script>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f9;
+    }
+
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .pagamento-card {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .content-card {
+        background: white;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+        .content-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 18px;
+    }
+
+        .form-group label {
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: .3s;
+        }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                outline: none;
+                border-color: #0078d7;
+                box-shadow: 0 0 5px rgba(0,120,215,0.3);
+            }
+
+            .form-group input:disabled {
+                background: #f8f9fb;
+                color: #333;
+                font-weight: bold;
+            }
+
+    .btn-pagar {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 6px;
+        background: #28a745;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+        .btn-pagar:hover {
+            background: #218838;
+        }
+</style>

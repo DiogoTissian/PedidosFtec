@@ -1,0 +1,188 @@
+﻿@model List<AvaliacaoModel>
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-container">
+    <div class="content-card">
+
+        <h1>Avaliações</h1>
+
+        @if (DadosTeste.usuarioLogado != null && DadosTeste.usuarioLogado.funcao == 0){
+            <div class="toolbar">
+                <a class="btn-novo"
+                   asp-controller="Avaliacao"
+                   asp-action="Create"
+                   asp-route-idProduto="@ViewBag.produtoId">
+                    Nova Avaliação
+                </a>
+            </div>
+        }
+
+        @if (Model != null && Model.Count > 0)
+        {
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th width="120">Nota</th>
+                        <th width="120">Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (AvaliacaoModel avaliacao in Model)
+                    {
+                        <tr>
+                            <td>@avaliacao.Descricao</td>
+
+                            <td>
+                                <span class="nota-badge">
+                                    @avaliacao.Nota
+                                </span>
+                            </td>
+
+                            @if (DadosTeste.usuarioLogado != null && DadosTeste.usuarioLogado.id == avaliacao.idCliente)
+                            {
+                                <td>
+                                    <a class="btn-editar"
+                                       asp-controller="Avaliacao"
+                                       asp-action="Edit"
+                                       asp-route-id="@avaliacao.Id">
+                                        Editar
+                                    </a>
+                                </td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-message">
+                Sem avaliações disponíveis.
+            </div>
+        }
+
+    </div>
+</div>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f9;
+    }
+
+    .page-container {
+        padding: 30px;
+    }
+
+    .content-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.15);
+        overflow-x: auto;
+    }
+
+        .content-card h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+    .toolbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+    }
+
+    .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .stats-table thead {
+            background: #0078d7;
+            color: white;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .stats-table tbody tr {
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+            .stats-table tbody tr:nth-child(even) {
+                background: #f8f9fb;
+            }
+
+            .stats-table tbody tr:hover {
+                background: #eef5ff;
+            }
+
+    .btn-novo {
+        background: #28a745;
+        color: white;
+        text-decoration: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: .3s;
+    }
+
+        .btn-novo:hover {
+            background: #218838;
+            color: white;
+        }
+
+    .btn-editar {
+        background: #0078d7;
+        color: white;
+        text-decoration: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        display: inline-block;
+        transition: .3s;
+    }
+
+        .btn-editar:hover {
+            background: #005fa3;
+            color: white;
+        }
+
+    .nota-badge {
+        display: inline-block;
+        min-width: 40px;
+        text-align: center;
+        padding: 4px 10px;
+        background: #28a745;
+        color: white;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+
+    .empty-message {
+        padding: 20px;
+        text-align: center;
+        color: #777;
+        background: #fafafa;
+        border: 1px dashed #ccc;
+        border-radius: 8px;
+    }
+</style>

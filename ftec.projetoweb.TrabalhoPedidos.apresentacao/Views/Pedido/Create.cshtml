@@ -1,0 +1,205 @@
+﻿@model ProdutoModel
+
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="page-container">
+
+    <div class="form-card">
+
+        <h1>Finalizar Pedido</h1>
+
+        <form method="post"
+              asp-controller="Pedido"
+              asp-action="Criar">
+
+            <div class="form-group">
+                <label>CEP de Entrega</label>
+                <input type="text"
+                       name="pedido.CEPEnderecoEntrega"
+                       placeholder="Digite o CEP" />
+            </div>
+
+            <div class="form-group">
+                <label>Número</label>
+                <input type="text"
+                       name="pedido.NumeroEnderecoEntrega"
+                       placeholder="Número do endereço" />
+            </div>
+
+            <div class="form-group">
+                <label>Quantidade</label>
+                <input id="qtdEsc"
+                       type="number"
+                       name="pedido.Qtd"
+                       min="@Model.EstoqueMinimoVenda"
+                       max="@Model.QuantidadeEstoque"
+                       value="1"
+                       onblur="defQtd()" />
+            </div>
+
+            <input type="hidden"
+                   id="estoqueAtualizado"
+                   name="pedido.ProdutosModel[0].QuantidadeEstoque" />
+
+            <input type="hidden"
+                   name="pedido.ProdutosModel[0].Id"
+                   value="@Model.Id" />
+
+            <div class="total-card">
+                <span class="total-label">Valor Total</span>
+                <input type="text" disabled id="preco" value="@Model.Preco" />
+                <input type="hidden" id="precoModel" value="@Model.Preco" name="pedido.ValorTotal" />
+            </div>
+
+            <input type="hidden" name="pedido.ProdutosModel[0].ProdutoId" value="@Model.Id" />
+            <input type="hidden" name="pedido.ProdutosModel[0].Disponivel" value="true" />
+            <input type="hidden" name="pedido.ProdutosModel[0].Excluido" value="false" />
+
+            <div class="action-buttons">
+                <button type="submit" class="btn-confirmar">
+                    Confirmar Pedido
+                </button>
+
+                <a class="btn-cancelar"
+                   asp-controller="Produto"
+                   asp-action="Index">
+                    Cancelar
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f6f9;
+    }
+
+    .page-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .form-card {
+        width: 100%;
+        max-width: 550px;
+        background: white;
+        padding: 35px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.15);
+    }
+
+        .form-card h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 18px;
+    }
+
+        .form-group label {
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #dcdcdc;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: .3s;
+        }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: #0078d7;
+                box-shadow: 0 0 5px rgba(0,120,215,.3);
+            }
+
+    .total-card {
+        margin-top: 20px;
+        padding: 18px;
+        border-radius: 8px;
+        background: #f8f9fa;
+        border: 1px solid #e5e5e5;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .total-label {
+        font-weight: bold;
+        color: #555;
+    }
+
+    .total-value {
+        font-size: 22px;
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .btn-confirmar,
+    .btn-cancelar {
+        flex: 1;
+        padding: 12px;
+        border-radius: 6px;
+        text-align: center;
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    .btn-confirmar {
+        background: #28a745;
+        color: white;
+        border: none;
+    }
+
+        .btn-confirmar:hover {
+            background: #218838;
+        }
+
+    .btn-cancelar {
+        background: #6c757d;
+        color: white;
+    }
+
+        .btn-cancelar:hover {
+            background: #5a6268;
+        }
+</style>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    function defQtd() {
+        let preco = @Model.Preco * Number($("#qtdEsc").val());
+        $("#preco").val(preco);
+        $("#precoModel").val(preco);
+        $("#estoqueAtualizado").val(@Model.QuantidadeEstoque - Number($("#qtdEsc").val()));
+    }
+</script>
